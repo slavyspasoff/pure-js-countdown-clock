@@ -45,14 +45,13 @@ formInputContainer.append(...inputs);
 form.append(formTextContainer, formInputContainer);
 form.appendChild(btn);
 
-const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
 const deleteLastCharacter = function (target) {
   target.value = target.value.split('').slice(0, -1).join('');
 };
 
 //event handlers
 form.addEventListener('input', evt => {
+  const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   if (evt.target.tagName === 'INPUT') {
     const target = evt.target;
     //check if last input was numeric
@@ -67,7 +66,7 @@ form.addEventListener('input', evt => {
     //check months
     if (target === inputs[2]) {
       if (target.value[0] === '0') deleteLastCharacter(target);
-      if ((target.value.length > 1) & (target.value[0] !== '1'))
+      if ((target.value.length > 1) & (Number(target.value[0]) !== 1))
         deleteLastCharacter(target);
       if ((target.value.length > 1) & (Number(target.value[1]) > 2))
         deleteLastCharacter(target);
@@ -78,11 +77,15 @@ form.addEventListener('input', evt => {
     }
     // check day
     if (target === inputs[1]) {
+      if ((target.value.length > 1) & (Number(target.value[0]) > 3))
+        deleteLastCharacter(target);
+      if (target.value.length > 2) deleteLastCharacter(target);
       if (
         inputs[2].value !== '' &&
         Number(target.value) > daysInMonth[Number(inputs[2].value) - 1]
       )
         target.value = String(daysInMonth[Number(inputs[2].value) - 1]);
+      if (inputs[2].value === '' && Number(target.value) > 31) target.value = 31;
     }
     //check hours
     if (target === inputs[0]) {
@@ -111,6 +114,12 @@ const paragraphs = Array.from({ length: 4 }, (_, i) => {
 //append
 counterContainer.append(...paragraphs);
 
+const getDifference = () =>
+  lux
+    .fromObject(setDate)
+    .diff(lux.now(), ['days', 'hours', 'minutes', 'seconds'])
+    .toObject();
+
 form.addEventListener('submit', function (evt) {
   evt.preventDefault();
   if (inputs[3].value.length < 4) return;
@@ -119,18 +128,13 @@ form.addEventListener('submit', function (evt) {
   setDate.day = inputs[1].value;
   setDate.month = inputs[2].value;
   setDate.year = inputs[3].value;
-  console.table(setDate);
+  if (getDifference().minutes < 0) return;
   this.remove();
   leftContainer.append(counterContainer);
   setInterval(() => {
-    const currentTime = lux.now();
-    const { days, hours, minutes, seconds } = lux
-      .fromObject(setDate)
-      .diff(currentTime, ['days', 'hours', 'minutes', 'seconds'])
-      .toObject();
-    paragraphs[0].textContent = `${String(days)} days`;
-    paragraphs[1].textContent = `${String(hours)} hours`;
-    paragraphs[2].textContent = `${String(minutes)} minutes`;
-    paragraphs[3].textContent = `${String(Math.floor(seconds))} seconds`;
+    paragraphs.forEach((e, i) => {
+      const identifier = counterIdentifiers[i].split('-')[1];
+      e.textContent = `${String(Math.floor(getDifference()[identifier]))} ${identifier}`;
+    });
   }, 500);
 });
