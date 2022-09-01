@@ -110,15 +110,18 @@ form.addEventListener('input', evt => {
 const counterContainer = document.createElement('div');
 counterContainer.id = 'counter-container';
 // counter paragraphs
-const counterIdentifiers = ['text-days', 'text-hours', 'text-minutes', 'text-seconds'];
+const counterIdentifiers = [
+  'text-years',
+  'text-months',
+  'text-days',
+  'text-hours',
+  'text-minutes',
+  'text-seconds',
+];
 const paragraphs = Array.from({ length: counterIdentifiers.length }, (_, i) => {
   const element = document.createElement('p');
   element.id = counterIdentifiers[i];
   element.classList.add('counter-text');
-  const span = document.createElement('span');
-  span.classList.add('counter-span');
-  span.textContent = counterIdentifiers[i].split('-')[1];
-  element.appendChild(span);
   return element;
 });
 //append
@@ -127,7 +130,10 @@ counterContainer.append(...paragraphs);
 const getDifference = () =>
   lux
     .fromObject(setDate)
-    .diff(lux.now(), ['days', 'hours', 'minutes', 'seconds'])
+    .diff(
+      lux.now(),
+      counterIdentifiers.map(e => e.split('-')[1])
+    )
     .toObject();
 
 form.addEventListener('submit', function (evt) {
