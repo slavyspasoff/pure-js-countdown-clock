@@ -48,6 +48,16 @@ form.appendChild(btn);
 const deleteLastCharacter = function (target) {
   target.value = target.value.split('').slice(0, -1).join('');
 };
+const displayError = function () {
+  btn.textContent = 'invalid date';
+  btn.disabled = true;
+  btn.style.backgroundColor = 'rgb(255 0 0 /0.3)';
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.textContent = 'Start countdown';
+    btn.style.backgroundColor = 'rgb(0 0 0)';
+  }, 2000);
+};
 
 //event handlers
 form.addEventListener('input', evt => {
@@ -122,13 +132,13 @@ const getDifference = () =>
 
 form.addEventListener('submit', function (evt) {
   evt.preventDefault();
-  if (inputs[3].value.length < 4) return;
-  for (let input of inputs) if (input.value === '') return;
+  if (inputs[3].value.length < 4) return displayError();
+  for (let input of inputs) if (input.value === '') return displayError();
   setDate.hour = inputs[0].value;
   setDate.day = inputs[1].value;
   setDate.month = inputs[2].value;
   setDate.year = inputs[3].value;
-  if (getDifference().minutes < 0) return;
+  if (getDifference().minutes < 0) return displayError();
   this.remove();
   leftContainer.append(counterContainer);
   setInterval(() => {
