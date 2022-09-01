@@ -20,7 +20,7 @@ formInputContainer.id = 'inp-container';
 // form identifiers
 const formIdentifiers = ['inp-o`clock', 'inp-day', 'inp-month', 'inp-year'];
 //form labels
-const labels = Array.from({ length: 4 }, (_, i) => {
+const labels = Array.from({ length: formIdentifiers.length }, (_, i) => {
   const element = document.createElement('label');
   element.htmlFor = formIdentifiers[i];
   element.classList.add('lbl-group');
@@ -28,7 +28,7 @@ const labels = Array.from({ length: 4 }, (_, i) => {
   return element;
 });
 //form inputs
-const inputs = Array.from({ length: 4 }, (_, i) => {
+const inputs = Array.from({ length: formIdentifiers.length }, (_, i) => {
   const element = document.createElement('input');
   element.id = formIdentifiers[i];
   element.name = formIdentifiers[i];
@@ -111,7 +111,7 @@ const counterContainer = document.createElement('div');
 counterContainer.id = 'counter-container';
 // counter paragraphs
 const counterIdentifiers = ['text-days', 'text-hours', 'text-minutes', 'text-seconds'];
-const paragraphs = Array.from({ length: 4 }, (_, i) => {
+const paragraphs = Array.from({ length: counterIdentifiers.length }, (_, i) => {
   const element = document.createElement('p');
   element.id = counterIdentifiers[i];
   element.classList.add('counter-text');
